@@ -54,7 +54,6 @@ class University(models.Model):
                 ('related_id', 'in', rec.get_children_ids()),
                 ('is_research','=',True),
                 ('is_published','=',True)])
-            print("_compute_research_count", rec.research_count, rec.get_children_ids())
 
     def _compute_children_count(self):
         self.children_count = len(self.child_ids)

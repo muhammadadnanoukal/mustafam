@@ -124,6 +124,7 @@ class WebsiteDocument(portal.CustomerPortal):
             'pager': pager,
             'keep': keep,
             'cat': cat,
+            'catalog': dict(unversities_search._fields['university_type'].selection).get(cat,"Home"),
             'base_url': '/researches' if university else '/catalog'
         }
 
@@ -244,6 +245,9 @@ class WebsiteDocument(portal.CustomerPortal):
             'search': search,
             'sortby': sortby,
             'keep': keep,
+            'cat': cat,
+            'doc': doc,
+            'catalog': dict(request.env['res.partner']._fields['university_type'].selection).get(cat, "Home"),
             'university': unv,
             'groupby': groupby,
             'filterby': filterby,

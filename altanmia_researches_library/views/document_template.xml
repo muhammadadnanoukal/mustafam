@@ -6,8 +6,10 @@
             <t t-if="university">
                 <div class="row ">
                     <div class="col-12 university-search-bar ">
-                         <a class="text-reset text-decoration-none" href="/universities"> Universities </a>
-                         <a t-if="university.parent_id" class="text-reset text-decoration-none" t-attf-href="/universities?university=#{university.parent_id.id}">
+                         <a class="text-reset text-decoration-none"
+                            t-attf-href="/catalog?doc=#{doc}&amp;cat=#{cat}"
+                            t-out="catalog"/>
+                         <a t-if="university.parent_id" class="text-reset text-decoration-none" t-attf-href="/catalog?doc=#{doc}&amp;cat=#{cat}&amp;university=#{university.parent_id.id}">
                            / <t t-esc="university.parent_id.name"/>
                          </a>
                          / <t t-esc="university.name"/>
@@ -246,7 +248,8 @@
                         <div class="col-md px-0 pt-5">
                             <div class="row ">
                                 <div class="col-12 university-search-bar ">
-                                    <a class="text-reset text-decoration-none" href="/universities"> Universities </a>
+                                    <a class="text-reset text-decoration-none"
+                                       t-attf-href="/catalog?doc=#{doc}&amp;cat=#{cat}" t-out="catalog"/>
                                     <t t-if="university">
                                         / <t t-esc="university.name"/>
                                     </t>

@@ -163,7 +163,7 @@ class Document(models.Model):
                 context = json.loads(context)
                 context["default_related_id"] = sel_folder
                 action.write({'context': context})
-                
+
         except ValueError as e:
             logger.error(e.msg)
 
