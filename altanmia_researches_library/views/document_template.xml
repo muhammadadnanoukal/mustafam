@@ -279,7 +279,7 @@
             <a t-foreach="universities" 
                 t-as="unv"
                 t-att-title="unv.name"
-                t-attf-href="#{base_url}?university=#{unv.id}" 
+                t-attf-href="#{base_url}?university=#{unv.id}&amp;doc=#{doc}&amp;cat=#{cat}"
                 class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
                 <t t-esc="unv.name"/>
                 <span class="badge text-bg-secondary rounded-pill" t-esc="unv.research_count"/>
@@ -305,7 +305,7 @@
         <div t-foreach="universities" t-as="unv" class="col-md-6 col-lg-3 mb-4">
             <article class="card border-1 shadow-sm h-100" itemscope="itemscope"
                      itemtype="http://schema.org/Universities">
-                    <a t-attf-href="#{base_url}?university=#{unv.id}"
+                    <a t-attf-href="#{base_url}?university=#{unv.id}&amp;doc=#{doc}&amp;cat=#{cat}"
                        class="text-reset text-decoration-none h-100 d-flex flex-column">
                         <header class="overflow-hidden bg-secondary rounded-top col-12">
                         <div class="d-block h-100 w-100">
@@ -319,7 +319,7 @@
                     </header>
                     </a>
                     <main class="card-body d-flex flex-column">
-                        <a t-attf-href="#{base_url}?university=#{unv.id}"
+                        <a t-attf-href="#{base_url}?university=#{unv.id}&amp;doc=#{doc}&amp;cat=#{cat}"
                             class="text-reset text-decoration-none h-100 d-flex flex-column">
                             <h3 t-attf-class="fw-bold my-3">
                                 <span t-field="unv.name" itemprop="name"/>

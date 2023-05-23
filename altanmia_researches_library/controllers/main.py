@@ -93,13 +93,11 @@ class WebsiteDocument(portal.CustomerPortal):
 
     @http.route(['/catalog', '/catalog/page/<int:page>'], type='http', auth="public", website=True,
                 sitemap=True)
-    def show_universities(self, cat=None ,university=None,page=1):
+    def show_universities(self, cat=None, doc='all', university=None, page=1):
         unversities_search = request.env['res.partner']
         domain = [('is_university','=',True),('university_type','=',cat),  ('parent_id','=',int(university) if university else False)]
 
         universities_count = unversities_search.search_count(domain)
-
-        print("domain", university, domain, universities_count)
 
         pager = portal_pager(
             url="/catalog",
@@ -115,15 +113,17 @@ class WebsiteDocument(portal.CustomerPortal):
             selected_university = unversities_search.browse(int(university))
         elif universities_count == 1:
             selected_university = universities[0]
-            return request.redirect(f'/catalog?cat={cat}&university={selected_university.id}')
+            return request.redirect(f'/catalog?cat={cat}&university={selected_university.id}&doc={doc}')
 
-        keep = QueryURL(f'/catalog?cat={cat}&university={university}&page={page}')
+        keep = QueryURL(f'/catalog?cat={cat}&university={university}&page={page}&doc={doc}')
 
         values = {
             'universities': universities,
             'university': selected_university,
+            'doc':doc,
             'pager': pager,
             'keep': keep,
+            'cat': cat,
             'base_url': '/researches' if university else '/catalog'
         }
 
@@ -141,23 +141,20 @@ class WebsiteDocument(portal.CustomerPortal):
         '/researches',
         '/researches/page/<int:page>'
     ], type='http', auth='public', website=True)
-    def portal_researches(self,source=None, university=None, doc=None, page=1, sortby=None, filterby=None, search=None, search_in='all', groupby='none', **kwargs):
+    def portal_researches(self,cat=None, university=None, doc='all', page=1, sortby=None, filterby=None, search=None, search_in='all', groupby='none', **kwargs):
         values = self._prepare_portal_layout_values()
 
         research = request.env['documents.document'].sudo()
 
-        universites = request.env['res.partner'].browse(int(university)) if university else \
-            request.env['res.partner'].search([('university_type','=',source)])
-
         domain = self._get_portal_default_domain1()
 
-        # if source and filterby not in ['internal', 'all']:
-        #     filterby = 'external'
-        #     groupby = 'domain'
+        if doc=='grad' and not filterby:
+            filterby = 'grad'
+            groupby = 'domain'
 
         unv = None
-        if universites and len(universites) == 1:
-            unv = universites.browse(0)
+        if university:
+            unv = request.env['res.partner'].browse(int(university))
             domain = AND([domain, [('related_id', 'in', unv.get_children_ids())]])
 
         searchbar_sortings = {
@@ -178,6 +175,7 @@ class WebsiteDocument(portal.CustomerPortal):
             'all': {'label': _("All"), 'domain': []},
             'phd': {'label': _('PHD'), 'domain':[('research_degree', '=', 'phd')]},
             'master': {'label': _('Master'), 'domain':[('research_degree', '=', 'master')]},
+            'grad': {'label': _('Graduate'), 'domain': [('research_degree', '=', 'grad')]},
             'year_ago': {'label': _('This Year'), 'domain':[('create_date', '>=', datetime.datetime.today() - datetime.timedelta(days=365))]},
             # 'internal': {'label': _('Internal'), 'domain':[('research_nat', '=', 'internal')]},
             # 'external': {'label': _('External'), 'domain':[('research_nat', '=', 'external')]},
@@ -219,7 +217,7 @@ class WebsiteDocument(portal.CustomerPortal):
         research_count = research.search_count(domain)
         pager = portal_pager(
             url="/researches",
-            url_args={'sortby': sortby, 'search_in': search_in, 'search': search, 'groupby': groupby, 'source':source, 'university':university},
+            url_args={'sortby': sortby, 'search_in': search_in, 'search': search, 'groupby': groupby, 'cat':cat, 'university':university, 'doc':doc},
             total=research_count,
             page=page,
             step=self._items_per_page

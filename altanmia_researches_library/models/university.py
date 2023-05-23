@@ -50,7 +50,11 @@ class University(models.Model):
 
     def _compute_research_count(self):
         for rec in self:
-            rec.research_count = rec.env['documents.document'].search_count([('related_id', 'in', rec.get_children_ids())])
+            rec.research_count = rec.env['documents.document'].search_count([
+                ('related_id', 'in', rec.get_children_ids()),
+                ('is_research','=',True),
+                ('is_published','=',True)])
+            print("_compute_research_count", rec.research_count, rec.get_children_ids())
 
     def _compute_children_count(self):
         self.children_count = len(self.child_ids)
