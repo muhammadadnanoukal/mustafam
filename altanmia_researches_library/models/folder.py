@@ -55,7 +55,7 @@ class Document(models.Model):
             action = self.env.ref("altanmia_researches_library.researches_action")
             context = action.context.lower().replace("'", "\"")
             context = json.loads(context)
-            return context["default_related_id"]
+            return context.get("default_related_id", False)
         except ValueError as e:
             logger.error(e.msg)
 
