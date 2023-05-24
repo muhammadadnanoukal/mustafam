@@ -98,6 +98,9 @@ class WebsiteDocument(portal.CustomerPortal):
         domain = [('is_university','=',True),('university_type','=',cat),  ('parent_id','=',int(university) if university else False)]
 
         universities_count = unversities_search.search_count(domain)
+        
+        if not universities_count:
+            return request.redirect(f'/researches?cat={cat}&university={university}&doc={doc}')
 
         pager = portal_pager(
             url="/catalog",
